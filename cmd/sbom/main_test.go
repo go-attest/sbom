@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/go-pkgx/sbom"
+	"github.com/go-attest/sbom"
 )
 
 func fixedNow() time.Time {

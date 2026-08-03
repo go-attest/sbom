@@ -1,7 +1,7 @@
 # sbom
 
-[![ci](https://github.com/go-pkgx/sbom/actions/workflows/ci.yml/badge.svg)](https://github.com/go-pkgx/sbom/actions/workflows/ci.yml)
-[![Go Reference](https://pkg.go.dev/badge/github.com/go-pkgx/sbom.svg)](https://pkg.go.dev/github.com/go-pkgx/sbom)
+[![ci](https://github.com/go-attest/sbom/actions/workflows/ci.yml/badge.svg)](https://github.com/go-attest/sbom/actions/workflows/ci.yml)
+[![Go Reference](https://pkg.go.dev/badge/github.com/go-attest/sbom.svg)](https://pkg.go.dev/github.com/go-attest/sbom)
 
 Pure-Go software bill of materials emitter for built pkgx bottles and
 their dependency closures. Emits **SPDX 2.3 JSON** and **CycloneDX 1.5
@@ -14,7 +14,7 @@ the output with the reference libraries
 ## Usage
 
 ```go
-import "github.com/go-pkgx/sbom"
+import "github.com/go-attest/sbom"
 
 d := sbom.Document{
     Name:    "openssl.org",
@@ -39,7 +39,7 @@ the output when empty; SPDX license fields fall back to `NOASSERTION`.
 ## CLI
 
 ```console
-$ go run github.com/go-pkgx/sbom/cmd/sbom \
+$ go run github.com/go-attest/sbom/cmd/sbom \
     --format cyclonedx --name openssl.org --version 1.1.1w
 ```
 

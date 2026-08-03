@@ -151,7 +151,7 @@ func (d Document) SPDX() ([]byte, error) {
 		DocumentNamespace: d.namespace(),
 		CreationInfo: spdxCreationInfo{
 			Created:  d.Created.UTC().Format(time.RFC3339),
-			Creators: []string{"Tool: go-pkgx/sbom"},
+			Creators: []string{"Tool: go-attest/sbom"},
 		},
 		Packages: make([]spdxPackage, 0, 1+len(d.Components)),
 		Relationships: make([]spdxRelationship, 0,

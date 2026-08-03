@@ -76,7 +76,7 @@ func TestSPDXShape(t *testing.T) {
 		t.Errorf("created = %v", got)
 	}
 	creators := ci["creators"].([]any)
-	if len(creators) != 1 || creators[0] != "Tool: go-pkgx/sbom" {
+	if len(creators) != 1 || creators[0] != "Tool: go-attest/sbom" {
 		t.Errorf("creators = %v", creators)
 	}
 

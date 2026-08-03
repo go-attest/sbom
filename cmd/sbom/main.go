@@ -9,7 +9,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/go-pkgx/sbom"
+	"github.com/go-attest/sbom"
 )
 
 // osExit and now are seams for tests.

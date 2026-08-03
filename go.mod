@@ -1,4 +1,4 @@
-module github.com/go-pkgx/sbom
+module github.com/go-attest/sbom
 
 go 1.26.4
 
