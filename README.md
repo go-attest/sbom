@@ -3,13 +3,30 @@
 [![ci](https://github.com/go-attest/sbom/actions/workflows/ci.yml/badge.svg)](https://github.com/go-attest/sbom/actions/workflows/ci.yml)
 [![Go Reference](https://pkg.go.dev/badge/github.com/go-attest/sbom.svg)](https://pkg.go.dev/github.com/go-attest/sbom)
 
-Pure-Go software bill of materials emitter for built pkgx bottles and
-their dependency closures. Emits **SPDX 2.3 JSON** and **CycloneDX 1.5
-JSON** with **zero runtime dependencies** — hand-rolled structs plus
-`encoding/json` only. Conformance is proven in test-only code by decoding
-the output with the reference libraries
+Pure-Go software bill of materials emitter for build artifacts and their
+dependency closures. Emits **SPDX 2.3 JSON** and **CycloneDX 1.5 JSON** with
+**zero runtime dependencies** — hand-rolled structs plus `encoding/json` only.
+Conformance is proven in test-only code by decoding the output with the
+reference libraries
 ([spdx/tools-golang](https://github.com/spdx/tools-golang) and
-[CycloneDX/cyclonedx-go](https://github.com/CycloneDX/cyclonedx-go)).
+[CycloneDX/cyclonedx-go](https://github.com/CycloneDX/cyclonedx-go)). The
+[`provenance`](./provenance) subpackage emits in-toto **SLSA Provenance v1**
+statements the same way (conformance-checked against
+[in-toto/attestation](https://github.com/in-toto/attestation)).
+
+## When to use this — and when not
+
+This **serializes** a bill of materials you already know (a subject plus a list
+of components); it does **not** discover them. It targets zero-dependency,
+`CGO_ENABLED=0`, multi-arch build tools that assemble their own component list
+and just need spec-valid SBOM/provenance bytes to attach to a release.
+
+If you need to *scan* a filesystem, container image, or lockfile to find what's
+inside, use a real generator — **[anchore/syft](https://github.com/anchore/syft)**
+is the reference. If you want the full document model at runtime, use the
+libraries directly ([spdx/tools-golang](https://github.com/spdx/tools-golang),
+[CycloneDX/cyclonedx-go](https://github.com/CycloneDX/cyclonedx-go)); this
+package keeps them as *test-only* dependencies so consumers stay dependency-free.
 
 ## Usage
 
