@@ -1,0 +1,10 @@
+mode: atomic
+github.com/go-pkgx/sbom/provenance/provenance.go:95.43,97.33 2 6
+github.com/go-pkgx/sbom/provenance/provenance.go:97.33,102.3 1 9
+github.com/go-pkgx/sbom/provenance/provenance.go:104.2,105.19 2 6
+github.com/go-pkgx/sbom/provenance/provenance.go:105.19,107.3 1 2
+github.com/go-pkgx/sbom/provenance/provenance.go:109.2,110.32 2 6
+github.com/go-pkgx/sbom/provenance/provenance.go:110.32,112.21 2 8
+github.com/go-pkgx/sbom/provenance/provenance.go:112.21,114.4 1 4
+github.com/go-pkgx/sbom/provenance/provenance.go:115.3,115.25 1 8
+github.com/go-pkgx/sbom/provenance/provenance.go:118.2,139.36 2 6
