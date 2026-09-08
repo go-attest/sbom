@@ -35,6 +35,10 @@ func fullStatement() Statement {
 		Materials: []Material{
 			{URI: "https://github.com/openssl/openssl/archive/OpenSSL_1_1_1w.tar.gz", SHA256: "cccc3333cccc3333cccc3333cccc3333cccc3333cccc3333cccc3333cccc3333"},
 			{URI: "https://example.com/no-digest.tar.gz"}, // no SHA256 -> digest omitted
+			// A git source: commit instead of a hash of bytes nobody ever hashed.
+			{URI: "git+https://github.com/openssl/openssl", GitCommit: "e04bd3433fd84e1861bdd8d6d5a4dc8fa3ef7bb2"},
+			// Both, for a checkout whose tarball we also hold.
+			{URI: "https://example.com/both.tar.gz", SHA256: "dddd4444dddd4444dddd4444dddd4444dddd4444dddd4444dddd4444dddd4444", GitCommit: "0123456789abcdef0123456789abcdef01234567"},
 		},
 	}
 }
@@ -93,8 +97,8 @@ func TestJSONFull(t *testing.T) {
 	}
 
 	deps := bd["resolvedDependencies"].([]any)
-	if len(deps) != 2 {
-		t.Fatalf("resolvedDependencies count = %d, want 2", len(deps))
+	if len(deps) != 4 {
+		t.Fatalf("resolvedDependencies count = %d, want 4", len(deps))
 	}
 	d0 := deps[0].(map[string]any)
 	if got := d0["uri"]; got != "https://github.com/openssl/openssl/archive/OpenSSL_1_1_1w.tar.gz" {
@@ -226,5 +230,38 @@ func TestConformanceInToto(t *testing.T) {
 	}
 	if err := st.Validate(); err != nil {
 		t.Errorf("reference Validate: %v", err)
+	}
+}
+
+// TestMaterialGitCommit covers the three shapes a resolved dependency's digest
+// set can take: an archive hash, a git commit, and both at once. The middle one
+// is why the field exists — a git URI names a ref, and a ref is not a fixed
+// point, so without the commit the material identifies nothing verifiable.
+func TestMaterialGitCommit(t *testing.T) {
+	b, err := fullStatement().JSON()
+	if err != nil {
+		t.Fatalf("JSON: %v", err)
+	}
+	m := decodeToMap(t, b)
+	deps := m["predicate"].(map[string]any)["buildDefinition"].(map[string]any)["resolvedDependencies"].([]any)
+	if len(deps) != 4 {
+		t.Fatalf("resolvedDependencies = %d, want 4", len(deps))
+	}
+	// [1] has neither: no digest key at all.
+	if _, ok := deps[1].(map[string]any)["digest"]; ok {
+		t.Errorf("deps[1] carries a digest; want it omitted")
+	}
+	// [2] is git-only: a gitCommit and no sha256.
+	d2 := deps[2].(map[string]any)["digest"].(map[string]any)
+	if got := d2["gitCommit"]; got != "e04bd3433fd84e1861bdd8d6d5a4dc8fa3ef7bb2" {
+		t.Errorf("deps[2].digest.gitCommit = %v", got)
+	}
+	if _, ok := d2["sha256"]; ok {
+		t.Errorf("deps[2] carries a sha256; a checkout has none")
+	}
+	// [3] carries both, in one digest set rather than replacing one another.
+	d3 := deps[3].(map[string]any)["digest"].(map[string]any)
+	if len(d3) != 2 || d3["sha256"] == nil || d3["gitCommit"] == nil {
+		t.Errorf("deps[3].digest = %v, want both algorithms", d3)
 	}
 }

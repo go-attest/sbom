@@ -24,9 +24,17 @@ type Subject struct {
 }
 
 // Material is a resolved input dependency of the build.
+//
+// A git source has no meaningful sha256 — nobody hashes a checkout — and its
+// URI names a ref, which is not a fixed point: a tag can be deleted and re-cut
+// at different content, and the URI reads the same afterwards. SLSA's digest
+// set exists for exactly this, so a commit goes in GitCommit and is emitted as
+// the standard `gitCommit` algorithm rather than squeezed into the URI, where
+// no verifier would look for it.
 type Material struct {
-	URI    string // e.g. "https://github.com/openssl/openssl/archive/...tar.gz"
-	SHA256 string // optional lowercase-hex digest
+	URI       string // e.g. "https://github.com/openssl/openssl/archive/...tar.gz"
+	SHA256    string // optional lowercase-hex digest, for an archive
+	GitCommit string // optional commit hash, for a git checkout
 }
 
 // Statement describes how one or more bottles were built.
@@ -111,6 +119,12 @@ func (s Statement) JSON() ([]byte, error) {
 		d := wireDependency{URI: m.URI}
 		if m.SHA256 != "" {
 			d.Digest = map[string]string{"sha256": m.SHA256}
+		}
+		if m.GitCommit != "" {
+			if d.Digest == nil {
+				d.Digest = map[string]string{}
+			}
+			d.Digest["gitCommit"] = m.GitCommit
 		}
 		deps = append(deps, d)
 	}
