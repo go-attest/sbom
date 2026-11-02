@@ -1,6 +1,6 @@
 module github.com/go-attest/sbom
 
-go 1.27.1
+go 1.27.3
 
 require (
 	github.com/CycloneDX/cyclonedx-go v0.12.0
